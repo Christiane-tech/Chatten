@@ -1,21 +1,23 @@
-<h1 align="center">✨ Chatten - Full-Stack Chat App with Auth & Emails ✨</h1>
+<h1 align="center">✨ Chatten - Full-Stack Chat App </h1>
 
 
-Highlights:
+Features:
 
-- 🔐 Custom JWT Authentication (no 3rd-party auth)
-- ⚡ Real-time Messaging via Socket.io
-- 🟢 Online/Offline Presence Indicators
-- 🔔 Notification & Typing Sounds (with toggle)
-- 📨 Welcome Emails on Signup (Resend)
-- 🗂️ Image Uploads (Cloudinary)
-- 🧰 REST API with Node.js & Express
-- 🧱 MongoDB for Data Persistence
-- 🚦 API Rate-Limiting powered by Arcjet
-- 🎨 Beautiful UI with React, Tailwind CSS & DaisyUI
-- 🧠 Zustand for State Management
-- 🧑‍💻 Git & GitHub Workflow (branches, PRs, merges)
-- 🚀 Easy Deployment (free-tier friendly with Sevalla)
+
+- 💬 **Live Chat:** Lightning-fast messaging powered by Socket.io.
+- 🎙️ **Voice Notes:** Record & play native audio messages in a snap.
+- 📡 **Live Presence:** Instantly see who's online right now.
+- 🔊 **Interactive UX:** Typing indicators & toggleable sound alerts.
+- 💌 **Automated Onboarding:** Beautiful welcome emails sent via Resend.
+- 🖼️ **Media Magic:** Flawless image uploads hosted on Cloudinary.
+- 🏗️ **Bulletproof Backend:** Fast, reliable REST API with Node.js & Express.
+- 💾 **NoSQL Power:** Persistent, scalable data storage with MongoDB.
+- 🛡️ **Ironclad Security:** Powerful API rate-limiting armed by Arcjet.
+- 💅 **Premium Aesthetics:** Stunning responsive UI with Tailwind CSS & React.
+- 🔋 **Global State:** Lightweight, frictionless state management using Zustand.
+- 🌿 **Pro Workflows:** Clean branching, PRs, & modern Git version control.
+- 🌐 **Instant Deploy:** Frictionless, free-tier ready deployment via Sevalla.
+- 🎟️ **Zero-Dependency Auth:** Secure, built-in custom JWT logins.
 
 ---
 
