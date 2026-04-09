@@ -1,4 +1,4 @@
-<h1 align="center">✨ Chatten - Full-Stack Chat App with Auth & Emails ✨</h1>
+<h1 align="center">✨ Chatten - Full-Stack Chat App </h1>
 
 
 Highlights:
