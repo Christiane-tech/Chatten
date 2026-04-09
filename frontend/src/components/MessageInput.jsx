@@ -2,30 +2,71 @@ import { useRef, useState } from "react";
 import useKeyboardSound from "../hooks/useKeyboardSound";
 import { useChatStore } from "../store/useChatStore";
 import toast from "react-hot-toast";
-import { ImageIcon, SendIcon, XIcon } from "lucide-react";
+import { ImageIcon, SendIcon, XIcon, MicIcon, SquareIcon } from "lucide-react";
 
 function MessageInput() {
   const { playRandomKeyStrokeSound } = useKeyboardSound();
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [audioPreview, setAudioPreview] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   const { sendMessage, isSoundEnabled } = useChatStore();
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+    if (!text.trim() && !imagePreview && !audioPreview) return;
     if (isSoundEnabled) playRandomKeyStrokeSound();
 
     sendMessage({
       text: text.trim(),
       image: imagePreview,
+      audio: audioPreview,
     });
     setText("");
-    setImagePreview("");
+    setImagePreview(null);
+    setAudioPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const reader = new FileReader();
+        reader.onloadend = () => setAudioPreview(reader.result);
+        reader.readAsDataURL(audioBlob);
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      toast.error("Microphone access denied");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const removeAudio = () => setAudioPreview(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -65,6 +106,25 @@ function MessageInput() {
         </div>
       )}
 
+      {audioPreview && (
+        <div className="max-w-3xl mx-auto mb-3 flex items-center bg-slate-800/50 p-2 rounded-lg relative w-max">
+          <audio controls src={audioPreview} className="h-10" />
+          <button
+            onClick={removeAudio}
+            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-200 hover:bg-slate-700"
+            type="button"
+          >
+            <XIcon className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {isRecording && (
+        <div className="max-w-3xl mx-auto mb-3 flex items-center text-red-500 animate-pulse font-medium">
+          Recording audio...
+        </div>
+      )}
+
       <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex space-x-4">
         <input
           type="text"
@@ -94,9 +154,30 @@ function MessageInput() {
         >
           <ImageIcon className="w-5 h-5" />
         </button>
+
+        {isRecording ? (
+          <button
+            type="button"
+            onClick={stopRecording}
+            className="bg-red-500/20 text-red-500 hover:bg-red-500/30 rounded-lg px-4 transition-colors"
+          >
+            <SquareIcon className="w-5 h-5" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={startRecording}
+            className={`bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-lg px-4 transition-colors ${
+              audioPreview ? "text-cyan-500" : ""
+            }`}
+          >
+            <MicIcon className="w-5 h-5" />
+          </button>
+        )}
+
         <button
           type="submit"
-          disabled={!text.trim() && !imagePreview}
+          disabled={!text.trim() && !imagePreview && !audioPreview && !isRecording}
           className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-lg px-4 py-2 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <SendIcon className="w-5 h-5" />

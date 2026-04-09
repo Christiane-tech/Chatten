@@ -53,6 +53,9 @@ function ChatContainer() {
                   {msg.image && (
                     <img src={msg.image} alt="Shared" className="rounded-lg h-48 object-cover" />
                   )}
+                  {msg.audio && (
+                    <audio controls src={msg.audio} className="mt-2 max-w-[220px]" />
+                  )}
                   {msg.text && <p className="mt-2">{msg.text}</p>}
                   <p className="text-xs mt-1 opacity-75 flex items-center gap-1">
                     {new Date(msg.createdAt).toLocaleTimeString(undefined, {
